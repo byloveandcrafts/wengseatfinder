@@ -1000,7 +1000,13 @@ function renderTables(){
   }
   const map={};
   guests.forEach(g=>{const k=g.table||'Unassigned';if(!map[k])map[k]=[];map[k].push(g.name);});
-  const sorted=Object.keys(map).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+  const sorted=Object.keys(map).sort((a,b)=>{
+    const vipA=a.toUpperCase().startsWith('VIP');
+    const vipB=b.toUpperCase().startsWith('VIP');
+    if(vipA&&!vipB)return -1;
+    if(!vipA&&vipB)return 1;
+    return a.localeCompare(b,undefined,{numeric:true});
+  });
   grid.innerHTML=sorted.map((table,i)=>{
     const names=map[table];
     const rows=names.map(n=>`<div class="table-guest-row"><div class="table-guest-dot"></div><span class="table-guest-name">${esc(n)}</span></div>`).join('');
